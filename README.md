@@ -12,8 +12,8 @@ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 ```
 cp ./vimrc ~/.vimrc
-cp -r ./colors ~/.vim/
-cp -r ./syntax ~/.vim/
-cp -r ./bundle ~/.vim/
+tar -zxvf vim_plug.tgz
+cd vim/
+cp -r vim/* ~/.vim/
 ```
 
