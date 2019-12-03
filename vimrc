@@ -7,17 +7,18 @@ set smartindent				" 为C程序提供自动缩进
 set cindent					" 使用C/C++样式的缩进, 使用V命令选中一段文本后，按'='调整格式
 set cino=:0g0t0(sus			" 设定 C/C++ 风格自动缩进的选项
 set ai                      " 打开普通文件类型的自动缩进
-"set smarttab				" 在行和段开始处使用制表符
+set expandtab			    " 用空格代替制表符
+set smarttab				" 在行和段开始处使用制表符
 set tabstop=4				" 制表符为4
 set softtabstop=4			" 统一缩进为4
 set shiftwidth=4
-set expandtab				" 用空格代替制表符
 "set noexpandtab			" 不要用空格代替制表符
 "set nowrap					" 不要换行
-"set lbr                     " 不再单词中间折行
+set lbr                     " 不再单词中间折行
 set foldenable              " 用空格键来开关折叠
 "set foldmethod=manual
-set foldmethod=marker
+"set foldmethod=marker
+"set foldmethod=indent
 set cursorline              " 设置横线 突出当前行
 set cursorcolumn            " 设置竖线 突出当前列
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -30,7 +31,7 @@ set hlsearch				" 高亮搜索
 set nowrapscan				" 查找到文件头或文件尾时停止
 set incsearch				" 边输入边查找
 set laststatus=2			" 总是显示状态行
-"set ignorecase				" 在搜索的时候忽略大小写
+" set ignorecase				" 在搜索的时候忽略大小写
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "文件设置
 set shortmess=atI			" 启动的时候不显示那个援助索马里儿童的提示`
@@ -38,8 +39,8 @@ set report=0				" 通过使用: commands命令，告诉我们文件的哪一行�
 set noerrorbells			" 不让vim发出讨厌的滴滴声
 set fillchars=vert:\ ,stl:\ " 在被分割的窗口间显示空白，便于阅读, stlnc:\(加了这个wm分割兰有\\\\\\\\\\\\\)
 "set mouse=a				" 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
-set selection=exclusive
-set selectmode=mouse,key
+"set selection=exclusive
+"set selectmode=mouse,key
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 一般设置
 set viminfo+=!				" 保存全局变量
@@ -104,10 +105,26 @@ highlight SpellLocal term=underline cterm=underline
 " markdown 语法高亮
 au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}   set filetype=markdown
 " python 语法高亮
-au BufRead,BufNewFile *.{py}   set filetype=python
+" au BufRead,BufNewFile *.{py}   set filetype=python
 " c/c++ 语法高亮
 au BufRead,BufNewFile *.{c,cpp,cc,h}   set filetype=cpp
 
+
+"##################################################################################cscope 配置
+" 添加cscope数据库到当前vim
+""if has("cscope")
+""    " set csprg=~/bin/cscope " 指定用来执行cscope的命令
+""    set csto=0 " 设置cstag命令查找次序：0先找cscope数据库再找标签文件；1先找标签文件再找cscope数据库
+""    set cst " 同时搜索cscope数据库和标签文件
+""    " set cscopequickfix=s-,c-,d-,i-,t-,e- " 使用QuickFix窗口来显示cscope查找结果
+""    set nocsverb
+""    if filereadable("cscope.out") " 若当前目录下存在cscope数据库，添加该数据库到vim
+""        cs add cscope.out
+""        " elseif $CSCOPE_DB != "" " 否则只要环境变量CSCOPE_DB不为空，则添加其指定的数据库到vim
+""        "    cs add $CSCOPE_DB
+""    endif
+""    set csverb
+""endif
 
 "##################################################################################与windows共享剪贴板
 set clipboard+=unnamed
@@ -151,11 +168,15 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'AutoComplPop'
 Bundle 'xml.vim'
 Bundle 'Javascript-Indentation'
+
+Plugin 'fatih/vim-go'
+"let g:go_version_warning = 0
+
 ""Bundle 'scrooloose/nerdcommenter'
 ""Bundle 'css_color.vim'
 "===================================== Tagbar (ctags)
 Bundle 'majutsushi/tagbar'
-set tags=tags;
+set tags=tags;/
 let g:tagbar_ctags_bin = 'ctags'
 let g:tagbar_width=35
 let g:tagbar_autofocus=1
@@ -189,16 +210,16 @@ let g:tagbar_type_markdown = {
 \ }
 
 " 语法检查 (这个插件是用来做静态语法检查的: js->jshint)
-""Bundle 'scrooloose/syntastic'
-""set statusline+=%#warningmsg#
-""set statusline+=%{SyntasticStatuslineFlag()}
-""set statusline+=%*
-""
-""let g:syntastic_always_populate_loc_list = 1
-""let g:syntastic_auto_loc_list = 1
-""let g:syntastic_check_on_open = 1
-""let g:syntastic_check_on_wq = 0
-""let g:syntastic_cpp_compiler_options = ' -std=c++11'
+"Bundle 'scrooloose/syntastic'
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+"let g:syntastic_cpp_compiler_options = ' -std=c++11'
 
 " ###################################################vim-scripts repos
 Bundle 'L9'
@@ -217,6 +238,53 @@ let javascript_enable_domhtmlcss=1
 " markdown 语法支持
 ""Bundle 'https://github.com/plasticboy/vim-markdown.git'
 
+Bundle 'klen/python-mode'
+
+" Python-mode
+" Activate rope
+" Keys: 按键：
+" K             Show python docs 显示Python文档
+" <Ctrl-Space>  Rope autocomplete  使用Rope进行自动补全
+" <Ctrl-c>g     Rope goto definition  跳转到定义处
+" <Ctrl-c>d     Rope show documentation  显示文档
+" <Ctrl-c>f     Rope find occurrences  寻找该对象出现的地方
+" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled) 断点
+" [[            Jump on previous class or function (normal, visual, operator modes)
+" ]]            Jump on next class or function (normal, visual, operator modes)
+"            跳转到前一个/后一个类或函数
+" [M            Jump on previous class or method (normal, visual, operator modes)
+" ]M            Jump on next class or method (normal, visual, operator modes)
+"              跳转到前一个/后一个类或方法
+let g:pymode_rope = 1
+
+" Documentation 显示文档
+let g:pymode_doc = 1
+let g:pymode_doc_key = 'K'
+
+"Linting 代码查错，=1为启用
+let g:pymode_lint = 1
+let g:pymode_lint_checker = "pyflakes,pep8"
+" Auto check on save
+let g:pymode_lint_write = 1
+
+" Support virtualenv
+let g:pymode_virtualenv = 1
+
+" Enable breakpoints plugin
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_bind = '<leader>b'
+
+" syntax highlighting 高亮形式
+let g:pymode_syntax = 1
+let g:pymode_syntax_all = 1
+let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+let g:pymode_syntax_space_errors = g:pymode_syntax_all
+
+" Don't autofold code 禁用自动代码折叠
+let g:pymode_folding = 0
+
+" markdown实时预览插件(需要node.js和npm)
+" Plugin 'suan/vim-instant-markdown'
 
 "=================================================================华丽的分割线============================================================================
 " Brief help  -- 此处后面都是vundle的使用命令
@@ -230,15 +298,9 @@ let javascript_enable_domhtmlcss=1
 " VUNDLE 安装 : git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 " PS1='${debian_chroot:+($debian_chroot)}\[\033[01;35;40m\]\u\[\033[01;00;40m\]@\[\033[01;35;40m\]\h\[\033[01;31;40m\]:\[\033[01;00;40m\]\w\[\033[01;32;40m\]\$\[\033[01;36;40m\]'
 " PS1='\[\e[1;38m\]➜  \[\e[1;33m\]\u@\[\e[1;31m\]\w \[\e[1;36m\]✗ \[\e[0m\] '
+" c/c++代码跳转需要系统安装ctags
 
 
-"tmux vim 配色冲突时的配置
-"在~/.bashrc中添加：    alias tmux="TERM=screen-256color-bce tmux"
-"在~/.tmux.conf中添加： set -g default-terminal "xterm"
-"
-"如果是osx，
-"在~/.bashrc中添加：    alias tmux="TERM=screen-256color-bce tmux"
-"在~/.tmux.conf中添加： set -g default-terminal "screen-256color"
 
 
 
