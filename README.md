@@ -12,8 +12,6 @@ git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 
 ```
 cp ./vimrc ~/.vimrc
-tar -zxvf vim_plug.tgz
-cp -r .vim/* ~/.vim/
 ```
 
 ## Plug List
