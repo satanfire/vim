@@ -109,39 +109,6 @@ au BufRead,BufNewFile *.{md,mdown,mkd,mkdn,markdown,mdwn}   set filetype=markdow
 " c/c++ 语法高亮
 au BufRead,BufNewFile *.{c,cpp,cc,h}   set filetype=cpp
 
-
-"##################################################################################cscope 配置
-" 添加cscope数据库到当前vim
-""if has("cscope")
-""    " set csprg=~/bin/cscope " 指定用来执行cscope的命令
-""    set csto=0 " 设置cstag命令查找次序：0先找cscope数据库再找标签文件；1先找标签文件再找cscope数据库
-""    set cst " 同时搜索cscope数据库和标签文件
-""    " set cscopequickfix=s-,c-,d-,i-,t-,e- " 使用QuickFix窗口来显示cscope查找结果
-""    set nocsverb
-""    if filereadable("cscope.out") " 若当前目录下存在cscope数据库，添加该数据库到vim
-""        cs add cscope.out
-""        " elseif $CSCOPE_DB != "" " 否则只要环境变量CSCOPE_DB不为空，则添加其指定的数据库到vim
-""        "    cs add $CSCOPE_DB
-""    endif
-""    set csverb
-""endif
-
-"##################################################################################与windows共享剪贴板
-set clipboard+=unnamed
-" GUI
-if has("gui_running")             " 如果是图形界面   
-  set guioptions=m        " 关闭菜单栏
-  set guioptions=t        " 关闭工具栏
-  "   set guioptions=L        " 启动左边的滚动条
-  set guioptions+=r       " 启动右边的滚动条
-  "   set guioptions+=b       " 启动下边的滚动条
-  set clipboard+=unnamed      " 共享剪贴板
-  if has("win32")
-         colorscheme torte    " torte配色方案
-         set guifont=Consolas:h11 " 字体和大小
-   endif
-endif 
-
 "##################################################################################VUNDLE
 set nocompatible               " be iMproved
 filetype off                   " required!
@@ -172,55 +139,6 @@ Bundle 'Javascript-Indentation'
 Plugin 'fatih/vim-go'
 "let g:go_version_warning = 0
 
-""Bundle 'scrooloose/nerdcommenter'
-""Bundle 'css_color.vim'
-"===================================== Tagbar (ctags)
-Bundle 'majutsushi/tagbar'
-set tags=tags;/
-let g:tagbar_ctags_bin = 'ctags'
-let g:tagbar_width=35
-let g:tagbar_autofocus=1
-let g:tagbar_compact=1       " 不显示顶部帮助信息，节省空间
-let g:tagbar_show_linenumbers = 1 " 显示绝对行号
-nmap <F12> :TagbarToggle<CR>
-" css suport
-let g:tagbar_type_css = {
-\ 'ctagstype' : 'Css',
-    \ 'kinds'     : [
-        \ 'c:classes',
-        \ 's:selectors',
-        \ 'i:identities'
-    \ ]
-\ }
-" makefile
-let g:tagbar_type_make = {
-            \ 'kinds':[
-                \ 'm:macros',
-                \ 't:targets'
-            \ ]
-\}
-" markdown
-let g:tagbar_type_markdown = {
-    \ 'ctagstype' : 'markdown',
-    \ 'kinds' : [
-        \ 'h:Heading_L1',
-        \ 'i:Heading_L2',
-        \ 'k:Heading_L3'
-    \ ]
-\ }
-
-" 语法检查 (这个插件是用来做静态语法检查的: js->jshint)
-"Bundle 'scrooloose/syntastic'
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-"let g:syntastic_cpp_compiler_options = ' -std=c++11'
-
 " ###################################################vim-scripts repos
 Bundle 'L9'
 Bundle 'FuzzyFinder'
@@ -234,9 +152,6 @@ set encoding=utf8
 
 let b:javascript_fold=1
 let javascript_enable_domhtmlcss=1
-
-" markdown 语法支持
-""Bundle 'https://github.com/plasticboy/vim-markdown.git'
 
 Bundle 'klen/python-mode'
 
@@ -283,8 +198,55 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 " Don't autofold code 禁用自动代码折叠
 let g:pymode_folding = 0
 
-" markdown实时预览插件(需要node.js和npm)
-" Plugin 'suan/vim-instant-markdown'
+" 格式化，自动对齐
+Plugin 'junegunn/vim-easy-align'
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+" gaip*|
+" ga	激活对齐插件
+" ip	for inner par:graph	行内段落
+" 按 | 对齐
+
+" 自动生成tags, 依赖系统安装ctags
+Plugin 'ludovicchabant/vim-gutentags'
+" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
+" 所生成的数据文件的名称 "
+let g:gutentags_ctags_tagfile = '.tags'
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+" 检测 ~/.cache/tags 不存在就新建 "
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+" 配置 ctags 的参数 "
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+pxI']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+" markdown 插件
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_new_list_item_indent = 0
+
+" markdown预览, 轻量级预览插件，通过浏览器实时预览，需要安装grip
+""Plugin 'JamshedVesuna/vim-markdown-preview'
+" 渲染时展示图片
+""let vim_markdown_preview_toggle=1
+" 设置默认浏览器, mac默认safari
+""let vim_markdown_preview_browser='Google Chrome'
+" 删除临时html文件"
+""let vim_markdown_preview_temp_file=1
+" github readme风格
+""let vim_markdown_preview_github=1
+" Markdown.pl风格
+""let vim_markdown_preview_perl=1
+" pandoc风格
+""let vim_markdown_preview_pandoc=1
 
 "=================================================================华丽的分割线============================================================================
 " Brief help  -- 此处后面都是vundle的使用命令
@@ -298,7 +260,7 @@ let g:pymode_folding = 0
 " VUNDLE 安装 : git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 " PS1='${debian_chroot:+($debian_chroot)}\[\033[01;35;40m\]\u\[\033[01;00;40m\]@\[\033[01;35;40m\]\h\[\033[01;31;40m\]:\[\033[01;00;40m\]\w\[\033[01;32;40m\]\$\[\033[01;36;40m\]'
 " PS1='\[\e[1;38m\]➜  \[\e[1;33m\]\u@\[\e[1;31m\]\w \[\e[1;36m\]✗ \[\e[0m\] '
-" c/c++代码跳转需要系统安装ctags
+" vim-gutentags需要系统安装ctags
 
 
 
